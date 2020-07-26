@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1031702762629",
+    "firebase_url": "https://notificationstutorialproject.firebaseio.com",
+    "project_id": "notificationstutorialproject",
+    "storage_bucket": "notificationstutorialproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031702762629:android:55b069628989780f8a85ec",
+        "android_client_info": {
+          "package_name": "jvd.ir.notifications"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031702762629-gc97jvkm2c2r087v2m1pe9elcsr4vfuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl5DkIBqFd3PMyTev0bOJpsf87WyWP_Nk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031702762629-gc97jvkm2c2r087v2m1pe9elcsr4vfuf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

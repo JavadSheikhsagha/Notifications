@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,13 +28,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        Button btn = findViewById(R.id.btn_profileActivity_title);
+        if (!getIntent().getStringExtra("name").isEmpty()){
+            btn.setText(getIntent().getStringExtra("name"));
+        }
+
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (task.isSuccessful()){
-                            String token = task.getResult().getToken();
-                            saveToken(token);
+                            //String token = task.getResult().getToken();
+                            //saveToken(token);
                         }else {
                             Toast.makeText(ProfileActivity.this, "No Token", Toast.LENGTH_SHORT).show();
                         }
@@ -43,9 +49,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void saveToken(String token) {
         
-        String email = mAuth.getCurrentUser().getEmail();
+        //String email = mAuth.getCurrentUser().getEmail();
 
-        MyCustomModel model = new MyCustomModel(email,token);
+        //MyCustomModel model = new MyCustomModel(email,token);
 
 
 

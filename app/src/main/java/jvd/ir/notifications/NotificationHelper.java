@@ -19,6 +19,8 @@ public class NotificationHelper {
     public static void displayNotification(Context context, String title, String body,int icon){
 
         Intent intent = new Intent(context,ProfileActivity.class);
+        Intent intent1 = new Intent(context,ProfileActivity.class);
+        intent1.putExtra("name","FUCKING SHIT");
 
         PendingIntent pendingIntent= PendingIntent.getActivity(
                 context,
@@ -26,6 +28,12 @@ public class NotificationHelper {
                 intent,
                 PendingIntent.FLAG_CANCEL_CURRENT
         );
+
+        PendingIntent pendingIntent1 = PendingIntent.getActivity(
+                context,
+                200,
+                intent1,
+                PendingIntent.FLAG_CANCEL_CURRENT);
 
         /*
         RemoteViews remoteViews= new RemoteViews(context.getPackageName(),R.layout.custom_push);
@@ -45,7 +53,8 @@ public class NotificationHelper {
                         .setContentText(body)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(new NotificationCompat.Action(R.drawable.ic_launcher_background,"MYTITLE",pendingIntent1));
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(1,mBuilder.build());

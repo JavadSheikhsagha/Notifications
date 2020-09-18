@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String ChannelName = "Simplified Coding";
     private static final String ChannelDescription = "all four types of notifications";
 
-    private EditText edtEmail,edtPassword;
     private Button btnRegister;
+    private TextInputLayout edtPass, edtEmail;
 
     private FirebaseAuth mAuth;
 
@@ -52,67 +53,104 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        edtEmail = findViewById(R.id.txt_input_email);
+        edtPass = findViewById(R.id.txt_input_password);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel notificationChannel = new NotificationChannel(ChannelId,ChannelName, NotificationManager.IMPORTANCE_DEFAULT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(ChannelId, ChannelName, NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setDescription(ChannelDescription);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(notificationChannel);
         }
 
-        edtEmail = findViewById(R.id.edt_email);
-        edtPassword = findViewById(R.id.edt_password);
         btnRegister = findViewById(R.id.btn_register);
+
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayNotification(MainActivity.this, "Titleeeeeeeee", "Bodyyyyyy", R.drawable.ic_baseline_accessibility_24);
-                createUser(edtEmail.getText().toString().trim(),edtPassword.getText().toString().trim());
+                if (!validateEmail() | !validatePassword()){
+                    Toast.makeText(MainActivity.this, "wrong", Toast.LENGTH_SHORT).show();
+                }else {
+
+                    String output = "Email : " + edtEmail.getEditText().getText().toString().trim() +
+                            "\n\t"+
+                            "Password : " + edtPass.getEditText().getText().toString();
+                    Toast.makeText(MainActivity.this, output, Toast.LENGTH_SHORT).show();
+                }
+
+                displayNotification(getApplicationContext(),"Notif","Notif Body Hey",R.drawable.background);
             }
         });
 
 
     }
 
+    private Boolean validatePassword(){
+        String password = edtPass.getEditText().getText().toString().trim();
+        if (password.isEmpty()) {
+            edtPass.setError("Field can't be Empty");
+            edtPass.setErrorEnabled(true);
+            return false;
+        }  else {
+            edtPass.setError(null);
+            return true;
+        }
+    }
+
+    private Boolean validateEmail(){
+        String email = edtEmail.getEditText().getText().toString().trim();
+        if (email.isEmpty()) {
+            edtEmail.setError("Field can't be Empty");
+            edtEmail.setErrorEnabled(true);
+            return false;
+        } else if (email.length() > 15) {
+            edtEmail.setError("cant be more than 15 chars");
+            edtEmail.setErrorEnabled(true);
+            return false;
+        } else {
+            edtEmail.setError(null);
+            return true;
+        }
+    }
+
     private void createUser(final String email, final String password) {
 
-        mAuth.createUserWithEmailAndPassword(email,password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    //user Register
-                    Intent intent=new Intent(MainActivity.this,ProfileActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                } else  {
-                    if (task.getException() instanceof FirebaseAuthUserCollisionException){
-                        //user Login
-                        mAuth.signInWithEmailAndPassword(email,password)
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        Toast.makeText(MainActivity.this, "Hey Login Successful", Toast.LENGTH_SHORT).show();
-                                        Intent intent=new Intent(MainActivity.this,ProfileActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                    }
-                                });
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            //user Register
+                            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                //user Login
+                                mAuth.signInWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                Toast.makeText(MainActivity.this, "Hey Login Successful", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                            }
+                                        });
+                            } else {
+                                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
-                    else {
-                        Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
+                });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (mAuth.getCurrentUser() != null){
-            Intent intent=new Intent(MainActivity.this,ProfileActivity.class);
+        if (mAuth.getCurrentUser() != null) {
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
